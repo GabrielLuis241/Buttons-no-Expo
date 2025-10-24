@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -7,15 +7,39 @@ import {
   TouchableOpacity,
   TouchableNativeFeedback,
   Alert,
-  Image
+  Image,
+  Animated
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
 export default function App() {
-  // Funções dos botões
-  const handleHighlightPress = () => Alert.alert('Botão 1', 'Você apertou o TouchableHighlight!');
-  const handleOpacityPress = () => Alert.alert('Botão 2', 'Você apertou o TouchableOpacity!');
-  const handleNativePress = () => Alert.alert('Botão 3', 'Você apertou o TouchableNativeFeedback!');
+  // Estados dos botões
+  const [arredondado, setArredondado] = useState(true);
+  const [corBotao, setCorBotao] = useState('#FF8C00');
+  const [mensagem, setMensagem] = useState('Botão Nativo');
+
+  // 1️⃣ Muda o formato (bordas)
+  const handleHighlightPress = () => {
+    setArredondado(!arredondado);
+  };
+
+  // 2️⃣ Muda a cor do gradiente
+  const handleOpacityPress = () => {
+    setCorBotao(corBotao === '#FF8C00' ? '#4A00E0' : '#FF8C00');
+  };
+
+  // 3️⃣ Faz algo aleatório
+  const handleNativePress = () => {
+    const acoes = [
+      '🔥 Você é incrível!',
+      '🎉 Parabéns!',
+      '😎 Suave na nave!',
+      '🚀 Voando baixo!',
+      '🍕 Bora comer pizza!',
+    ];
+    const aleatoria = acoes[Math.floor(Math.random() * acoes.length)];
+    setMensagem(aleatoria);
+  };
 
   const handleLongPress = (tipo) => Alert.alert('Toque longo', `Você segurou o botão ${tipo}!`);
 
@@ -23,42 +47,50 @@ export default function App() {
     <View style={styles.container}>
       <Text style={styles.title}>Desafio dos Botões 🔘</Text>
 
-      {/* 1️⃣ TouchableHighlight */}
+      {/* 1️⃣ TouchableHighlight (muda o formato) */}
       <TouchableHighlight
-        style={[styles.botao, { backgroundColor: '#4CAF50' }]}
+        style={[
+          styles.botao,
+          {
+            backgroundColor: '#4CAF50',
+            borderRadius: arredondado ? 50 : 5,
+          },
+        ]}
         underlayColor="#2E7D32"
         onPress={handleHighlightPress}
         onLongPress={() => handleLongPress('TouchableHighlight')}
       >
-        <Text style={styles.textoBotao}>Botão Highlight</Text>
+        <Text style={styles.textoBotao}>
+          {arredondado ? 'Botão Arredondado' : 'Botão Quadrado'}
+        </Text>
       </TouchableHighlight>
 
-      {/* 2️⃣ TouchableOpacity (com ícone, sombra e gradiente) */}
+      {/* 2️⃣ TouchableOpacity (muda cor e tem ícone + gradiente) */}
       <TouchableOpacity
         activeOpacity={0.7}
         onPress={handleOpacityPress}
         onLongPress={() => handleLongPress('TouchableOpacity')}
       >
         <LinearGradient
-          colors={['#FF8C00', '#FF3D00']}
+          colors={[corBotao, '#FF3D00']}
           style={styles.gradienteBotao}
         >
           <Image
             source={{ uri: 'https://cdn-icons-png.flaticon.com/512/1828/1828817.png' }}
             style={styles.icone}
           />
-          <Text style={styles.textoBotao}>Botão Estiloso</Text>
+          <Text style={styles.textoBotao}>Botão Colorido</Text>
         </LinearGradient>
       </TouchableOpacity>
 
-      {/* 3️⃣ TouchableNativeFeedback */}
+      {/* 3️⃣ TouchableNativeFeedback (faz algo aleatório) */}
       <TouchableNativeFeedback
         onPress={handleNativePress}
         onLongPress={() => handleLongPress('TouchableNativeFeedback')}
         background={TouchableNativeFeedback.Ripple('#1976D2', true)}
       >
         <View style={[styles.botao, { backgroundColor: '#2196F3' }]}>
-          <Text style={styles.textoBotao}>Botão Nativo</Text>
+          <Text style={styles.textoBotao}>{mensagem}</Text>
         </View>
       </TouchableNativeFeedback>
     </View>
